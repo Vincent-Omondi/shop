@@ -11,3 +11,13 @@
 // Rails.start()
 // Turbolinks.start()
 // ActiveStorage.start()
+
+document.addEventListener('turbolinks:load', () => {
+    // Auto-hide flash messages
+    const flashMessages = document.querySelectorAll('.notification');
+    flashMessages.forEach(flash => {
+      setTimeout(() => {
+        flash.style.display = 'none';
+      }, 3000);
+    });
+  });
