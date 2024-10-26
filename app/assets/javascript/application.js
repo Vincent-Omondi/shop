@@ -20,4 +20,4 @@ document.addEventListener('turbolinks:load', () => {
         flash.style.display = 'none';
       }, 3000);
     });
-  });
+});
