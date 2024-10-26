@@ -1,48 +1,16 @@
-<div class="cart-container">
-  <h2>Your Cart</h2>
-  
-  <% if @cart.line_items.any? %>
-    <table class="cart-table">
-      <thead>
-        <tr>
-          <th>Product</th>
-          <th>Quantity</th>
-          <th>Price</th>
-          <th>Total</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @cart.line_items.each do |line_item| %>
-          <tr>
-            <td><%= line_item.product.title %></td>
-            <td><%= line_item.quantity %></td>
-            <td><%= number_to_currency(line_item.product.price) %></td>
-            <td><%= number_to_currency(line_item.total_price) %></td>
-            <td>
-              <%= link_to 'Remove', line_item_path(line_item), 
-                  method: :delete, 
-                  data: { confirm: 'Are you sure?' }, 
-                  class: 'button is-small is-danger' %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="3"><strong>Total:</strong></td>
-          <td><%= number_to_currency(@cart.total_price) %></td>
-          <td></td>
-        </tr>
-      </tfoot>
-    </table>
-    
-    <%= button_to 'Empty Cart', cart_path(@cart), 
-        method: :delete, 
-        data: { confirm: 'Are you sure?' }, 
-        class: 'button is-danger' %>
-  <% else %>
-    <p>Your cart is empty</p>
-    <%= link_to 'Continue Shopping', root_path, class: 'button is-primary' %>
-  <% end %>
-</div>
+<h1>Your Cart</h1>
+
+<% if @cart.line_items.empty? %>
+  <p>Your cart is empty</p>
+<% else %>
+  <ul>
+    <% @cart.line_items.each do |item| %>
+      <li>
+        <%= item.quantity %> x <%= item.product.name %> 
+        (<%= number_to_currency(item.total_price) %>)
+      </li>
+    <% end %>
+  </ul>
+
+  <p>Total: <%= number_to_currency(@cart.total_price) %></p>
+<% end %>
