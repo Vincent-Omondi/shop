@@ -5,7 +5,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
   
   has_many :products, dependent: :destroy
-  
+  has_one :cart
   # Add validation for name field
   validates :name, presence: true, length: { maximum: 50 }
 end
