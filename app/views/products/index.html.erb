@@ -25,10 +25,14 @@
           <h3 class="fw7 f4 title"><%= link_to product.title, product %></h3>
           <p class="has-text-gray fg pt1">Sold by: <%= seller_name(product) %></p>
           <p class="f3 fw6 has-text-right pt2 price"><%= number_to_currency(product.price) %></p>
-  
-          <%# Only show edit/delete buttons to the product owner %>
-          <% if product_author(product) %>
-            <div class="buttons">
+
+          <div class="buttons is-centered">
+            <%= button_to 'Add to Cart', 
+                line_items_path(product_id: product), 
+                class: "button is-primary" %>
+            
+            <%# Only show edit/delete buttons to the product owner %>
+            <% if product_author(product) %>
               <%= link_to 'Edit', edit_product_path(product), class: "button is-small is-info" %>
               <%= link_to 'Delete', 
                   product, 
@@ -38,8 +42,8 @@
                   }, 
                   class: "button is-small is-danger" 
               %>
-            </div>
-          <% end %>
+            <% end %>
+          </div>
         </div>
       </div>
     <% end %>
