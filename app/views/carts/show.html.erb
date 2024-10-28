@@ -13,4 +13,7 @@
   </ul>
 
   <p>Total: <%= number_to_currency(@cart.total_price) %></p>
+  <%= button_to 'Empty Cart', empty_cart_path(@cart), method: :delete, data: { confirm: 'Are you sure you want to empty your cart?' } %>
 <% end %>
+
+<%= link_to 'Continue Shopping', root_path %>
