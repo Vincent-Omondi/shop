@@ -1,10 +1,18 @@
 Rails.application.routes.draw do
+  resources :carts do
+    member do
+      delete :empty
+    end
+  end
+  
   resources :products
-  resources :line_items
-  resources :carts
+  resources :line_items do
+    member do
+      patch :update_quantity
+    end
+  end
   devise_for :users, controllers: {
     registrations: 'registrations'
   }
   root 'products#index'
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

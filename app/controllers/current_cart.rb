@@ -1,14 +1,4 @@
 # app/controllers/concerns/current_cart.rb
-# module CurrentCart
-#     private
-#       def set_cart
-#         @cart = Cart.find(session[:cart_id])
-#       rescue ActiveRecord::RecordNotFound
-#         @cart = Cart.create
-#         session[:cart_id] = @cart.id
-#       end
-#   end
-
 module CurrentCart
   private
     def set_cart
@@ -17,9 +7,9 @@ module CurrentCart
       if user_signed_in?
         if @cart && @cart.user_id.nil?
           # Transfer guest cart to user
-          @cart.update(user: current_user)
+          @cart.update(user_id: current_user.id)
         elsif @cart.nil? || @cart.user_id != current_user.id
-          @cart = Cart.create(user: current_user)
+          @cart = Cart.create(user_id: current_user.id)
         end
       elsif @cart.nil?
         @cart = Cart.create  # Create cart without user for guests
