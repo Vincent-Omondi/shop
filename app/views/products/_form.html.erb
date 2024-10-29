@@ -4,6 +4,12 @@
     <%= simple_form_for @product, html: { multipart: true } do |f| %>
       <%= f.error_notification %>
 
+      <% if @product.errors.any? %>
+        <div class="alert alert-danger">
+          <%= @product.errors.full_messages.first %>
+        </div>
+      <% end %>
+
         <div class="columns">
 
           <div class="field column is-9">
@@ -38,7 +44,7 @@
               <label class="label">Brand</label>
               <div class="control has-icons-left">
                 <span class="select">
-                  <%= f.input_field :brand, collection: Product::BRAND, prompt: "Select brand" %>
+                  <%= f.input_field :brand, collection: Product::BRAND, prompt: "Select brand", required: true %>
                 </span>
                 <span class="icon is-small is-left">
                   <i class="fa fa-tag"></i>
@@ -52,7 +58,7 @@
               <label class="label">Finish</label>
               <div class="control has-icons-left">
                 <span class="select">
-                  <%= f.input_field :finish, collection: Product::FINISH, prompt: "Select finish" %>
+                  <%= f.input_field :finish, collection: Product::FINISH, prompt: "Select finish", required: true %>
                 </span>
                 <span class="icon is-small is-left">
                   <i class="fa fa-paint-brush"></i>
@@ -66,7 +72,7 @@
               <label class="label">Condition</label>
               <div class="control has-icons-left">
                 <span class="select">
-                  <%= f.input_field :condition, collection: Product::CONDITION, prompt: "Select condition" %>
+                  <%= f.input_field :condition, collection: Product::CONDITION, prompt: "Select condition", required: true %>
                 </span>
                 <span class="icon is-small is-left">
                   <i class="fa fa-paint-brush"></i>
