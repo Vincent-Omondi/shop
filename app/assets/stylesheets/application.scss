@@ -14,21 +14,117 @@
  *= require_self
  */
 
+// Variables
 $link: #444;
 $link-hover: #222;
 
+// Imports
 @import "bulma";
 @import "functions";
 
-
+// Base styles
 .notification {
   border-radius: 0;
+  
+  &:not(:last-child) {
+    margin-bottom: 0;
+  }
 }
 
-.notification:not(:last-child) {
-  margin-bottom: 0;
+// Navbar
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  background-color: $warning;
+  
+  .navbar-brand {
+    .title {
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .navbar-burger {
+    height: 4.25rem;
+    width: 4.25rem;
+    cursor: pointer;
+    
+    &:hover {
+      background-color: rgba(0,0,0,0.05);
+    }
+    
+    span {
+      height: 2px;
+      width: 16px;
+      left: calc(50% - 8px);
+      transition: all 0.3s ease-in-out;
+    }
+
+    &.is-active {
+      span {
+        &:nth-child(1) {
+          transform: translateY(5px) rotate(45deg);
+        }
+        &:nth-child(2) {
+          opacity: 0;
+        }
+        &:nth-child(3) {
+          transform: translateY(-5px) rotate(-45deg);
+        }
+      }
+    }
+  }
+
+  .navbar-menu {
+    @media screen and (max-width: 1023px) {
+      display: none;
+      position: absolute;
+      width: 100%;
+      top: 100%;
+      left: 0;
+      background-color: $warning;
+      box-shadow: 0 8px 16px rgba(10,10,10,.1);
+      padding: 0.5rem 0;
+      
+      &.is-active {
+        display: block !important; // Force display
+        animation: slideDown 0.3s ease-in-out; // Add smooth animation
+      }
+    }
+  }
+
+  .navbar-item {
+    font-weight: 500;
+    
+    .button {
+      transition: all 0.3s ease;
+      
+      &.is-warning {
+        &:hover {
+          background-color: darken($warning, 5%);
+        }
+      }
+      
+      &.is-dark {
+        &:hover {
+          background-color: lighten($dark, 5%);
+        }
+      }
+    }
+  }
+
+  .navbar-link {
+    &::after {
+      border-color: currentColor;
+    }
+  }
 }
 
+// Product Grid
 .product-index-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -42,6 +138,7 @@ $link-hover: #222;
     .title {
       line-height: 1.6rem;
     }
+    
     .price {
       position: absolute;
       bottom: 10px;
@@ -70,8 +167,7 @@ $link-hover: #222;
   }
 }
 
-// cart
-
+// Cart Styles
 .cart-icon {
   position: relative;
   
@@ -83,23 +179,22 @@ $link-hover: #222;
   }
 }
 
-.cart-table {
-  width: 100%;
-  margin-bottom: 2rem;
-}
-
-.notification {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1000;
-}
 .cart-count {
   position: absolute;
   top: -8px;
   right: -8px;
+  min-width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 0.75rem;
-  font-weight: bold;
+  font-weight: 600;
+}
+
+.cart-table {
+  width: 100%;
+  margin-bottom: 2rem;
 }
 
 .button.is-warning .icon {
@@ -111,8 +206,42 @@ $link-hover: #222;
   position: fixed;
   top: 20px;
   right: 20px;
-  z-index: 1000;
-  animation: fadeOut 5s forwards;
+  z-index: 31;
+  width: auto;
+  max-width: 350px;
+  border-radius: 4px;
+  padding: 1rem 1.5rem;
+  margin: 0;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  
+  &.is-success {
+    animation: fadeInOut 5s forwards;
+  }
+  
+  &.is-danger {
+    animation: fadeInOut 5s forwards;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-20px); }
+  5% { opacity: 1; transform: translateY(0); }
+  95% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
+
+// Animations
+@keyframes slideDown {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeOut {
@@ -121,7 +250,7 @@ $link-hover: #222;
   100% { opacity: 0; display: none; }
 }
 
-// Responsive navbar
+// Responsive Styles
 @media screen and (max-width: 1023px) {
   .navbar-menu {
     .navbar-end {
@@ -132,6 +261,32 @@ $link-hover: #222;
           
           .button {
             margin: 5px 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+body {
+  padding-top: 3.25rem;
+}
+
+// Add mobile-specific styles
+@media screen and (max-width: 1023px) {
+  .navbar-menu.is-active {
+    .navbar-end {
+      .navbar-item {
+        padding: 0.75rem 1.5rem;
+        
+        .field.is-grouped {
+          display: flex;
+          flex-direction: column;
+          
+          .button {
+            width: 100%;
+            margin: 0.25rem 0;
+            justify-content: center;
           }
         }
       }
