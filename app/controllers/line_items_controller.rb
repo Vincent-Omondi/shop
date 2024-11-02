@@ -9,7 +9,7 @@ class LineItemsController < ApplicationController
     @line_item = @cart.add_product(product)
 
     if @line_item.save
-      redirect_to @line_item.cart, notice: "#{product.title} added to your cart"
+      redirect_back(fallback_location: root_path, notice: "#{product.title} added to your cart")  # <- Changed this line
     else
       redirect_to product, alert: "Failed to add #{product.title} to cart"
     end
