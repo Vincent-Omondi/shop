@@ -1,10 +1,30 @@
 <% content_for :header do %>
-  <section class="hero is-warning">
+  <section class="hero is-medium" style="background: linear-gradient(135deg, #ffd34e 0%, #ffbb00 100%);">
     <div class="hero-body">
       <div class="container">
-        <h1 class="title">
-          Browse new products
-        </h1>
+        <div class="columns is-vcentered">
+          <div class="column is-8 is-offset-2 has-text-centered">
+            <h1 class="title is-1 mb-4" style="color: #2c2c2c;">
+              Discover Amazing Products
+            </h1>
+            <p class="subtitle is-4 mb-5" style="color: #4a4a4a;">
+              Shop the latest trends and find your perfect match
+            </p>
+            <div class="field has-addons justify-content-center">
+              <div class="control is-expanded">
+                <input class="input is-medium" type="text" placeholder="Search for products...">
+              </div>
+              <div class="control">
+                <button class="button is-dark is-medium">
+                  <span class="icon">
+                    <i class="fas fa-search"></i>
+                  </span>
+                  <span>Search</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
