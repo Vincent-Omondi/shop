@@ -31,9 +31,12 @@
         <p class="f3 fw6 has-text-right pt2 price"><%= number_to_currency(product.price) %></p>
 
         <div class="buttons is-centered">
-          <%= button_to 'Add to Cart', 
-              line_items_path(product_id: product), 
-              class: "button is-primary" %>
+          <%# Only show Add to Cart button if user is not the product owner %>
+          <% unless product_author(product) %>
+            <%= button_to 'Add to Cart', 
+                line_items_path(product_id: product), 
+                class: "button is-primary" %>
+          <% end %>
           
           <%# Only show edit/delete buttons to the product owner %>
           <% if product_author(product) %>
