@@ -21,15 +21,17 @@
           <p class="seller">Sold by <%= @product.user.name %></p>
         </div>
 
-        <div class="add-to-cart-section">
-          <%= button_to line_items_path(product_id: @product), 
-              class: "button is-primary is-large add-to-cart-button" do %>
-            <span class="icon">
-              <i class="fas fa-shopping-cart"></i>
-            </span>
-            <span>Add to Cart</span>
-          <% end %>
-        </div>
+        <% unless product_author(@product) %>
+          <div class="add-to-cart-section">
+            <%= button_to line_items_path(product_id: @product), 
+                class: "button is-primary is-large add-to-cart-button" do %>
+              <span class="icon">
+                <i class="fas fa-shopping-cart"></i>
+              </span>
+              <span>Add to Cart</span>
+            <% end %>
+          </div>
+        <% end %>
 
         <div class="product-meta">
           <% if @product.brand? %>
