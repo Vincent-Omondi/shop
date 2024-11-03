@@ -101,14 +101,20 @@
         </div>
 
         <%# Image Upload %>
-        <div class="field-group">
+        <div class="field-group" data-controller="image-preview">
           <label class="label">Product Images</label>
           <div class="file-upload-container">
             <div class="file is-centered">
               <label class="file-label">
                 <%= f.input :image, 
                     as: :file,
-                    input_html: { class: "file-input product-image" },
+                    input_html: { 
+                      class: "file-input product-image",
+                      data: {
+                        image_preview_target: "input",
+                        action: "change->image-preview#preview"
+                      }
+                    },
                     label: false,
                     wrapper: false %>
                 <span class="file-cta">
@@ -117,9 +123,12 @@
                   </span>
                   <span class="file-label">Choose a file…</span>
                 </span>
-                <span class="file-name" id="filename">No file selected</span>
+                <span class="file-name" id="filename" data-image-preview-target="filename">
+                  No file selected
+                </span>
               </label>
             </div>
+            <div id="image-preview" data-image-preview-target="preview" class="mt-3"></div>
           </div>
         </div>
 
@@ -132,7 +141,6 @@
     <% end %>
   </div>
 </div>
-
 <% content_for :page_scripts do %>
   <script>
     document.querySelector('.product-image').onchange = function() {
@@ -140,3 +148,4 @@
     };
   </script>
 <% end %>
+
