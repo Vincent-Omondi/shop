@@ -1,111 +1,140 @@
-<div class="columns">
-  <div class="column is-8 is-centered">
-
+<div class="form-container">
+  <div class="custom-form animate-form">
     <%= simple_form_for @product, html: { multipart: true } do |f| %>
-      <%= f.error_notification %>
+      <%# Form Header %>
+      <div class="form-header">
+        <h1 class="title">
+          <%= @product.new_record? ? 'Add New Product' : 'Edit Product' %>
+        </h1>
+      </div>
 
-      <% if @product.errors.any? %>
-        <div class="alert alert-danger">
-          <%= @product.errors.full_messages.first %>
-        </div>
-      <% end %>
+      <div class="form-body">
+        <%# Error Messages %>
+        <% if @product.errors.any? %>
+          <div class="error-container">
+            <%= @product.errors.full_messages.first %>
+          </div>
+        <% end %>
 
-        <div class="columns">
-
-          <div class="field column is-9">
-            <div class="control">
-              <%= f.input :title , required: true, input_html: { class: "input"}, wrapper: false, label_html: { class:"label" } %>
-            </div>
+        <%# Basic Information %>
+        <div class="responsive-grid">
+          <div class="field-group">
+            <%= f.input :title, 
+                required: true,
+                input_html: { class: "input" },
+                wrapper: false,
+                label_html: { class: "label" } %>
           </div>
 
-          <div class="field column">
-            <div class="control">
-              <%= f.input :price, required: true, input_html: { class:"input", maxlength: 7  }, wrapper: false, label_html: { class:"label" } %>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="field">
-          <div class="control">
-            <%= f.input :model, required: true, input_html: { class:"input" }, wrapper: false, label_html: { class:"label" } %>
-          </div>
-        </div>
-
-        <div class="field">
-          <div class="control">
-            <%= f.input :description, required: true, input_html: { class:"textarea" }, wrapper: false, label_html: { class:"label" } %>
+          <div class="field-group">
+            <%= f.input :price, 
+                required: true,
+                input_html: { class: "input", maxlength: 7 },
+                wrapper: false,
+                label_html: { class: "label" } %>
           </div>
         </div>
 
-        <div class="columns">
+        <div class="field-group">
+          <%= f.input :description, 
+              required: true,
+              input_html: { class: "textarea", rows: 4 },
+              wrapper: false,
+              label_html: { class: "label" } %>
+        </div>
+
+        <%# Product Details %>
+        <div class="columns is-multiline">
+          <%# Brand Selection %>
           <div class="field column is-4">
             <div class="control">
-              <label class="label">Brand</label>
+              <label class="label is-medium">Brand</label>
               <div class="control has-icons-left">
-                <span class="select">
-                  <%= f.input_field :brand, collection: Product::BRAND, prompt: "Select brand", required: true %>
+                <span class="select is-medium is-fullwidth">
+                  <%= f.input_field :brand, 
+                      collection: Product::BRAND, 
+                      prompt: "Select brand", 
+                      required: true %>
                 </span>
-                <span class="icon is-small is-left">
+                <span class="icon is-medium is-left">
                   <i class="fa fa-tag"></i>
                 </span>
               </div>
             </div>
-           </div>
+          </div>
 
+          <%# Finish Selection %>
           <div class="field column is-4">
             <div class="control">
-              <label class="label">Finish</label>
+              <label class="label is-medium">Finish</label>
               <div class="control has-icons-left">
-                <span class="select">
-                  <%= f.input_field :finish, collection: Product::FINISH, prompt: "Select finish", required: true %>
+                <span class="select is-medium is-fullwidth">
+                  <%= f.input_field :finish, 
+                      collection: Product::FINISH, 
+                      prompt: "Select finish", 
+                      required: true %>
                 </span>
-                <span class="icon is-small is-left">
+                <span class="icon is-medium is-left">
                   <i class="fa fa-paint-brush"></i>
                 </span>
-              </div>
-            </div>
-           </div>
-
-          <div class="field column is-4">
-            <div class="control">
-              <label class="label">Condition</label>
-              <div class="control has-icons-left">
-                <span class="select">
-                  <%= f.input_field :condition, collection: Product::CONDITION, prompt: "Select condition", required: true %>
-                </span>
-                <span class="icon is-small is-left">
-                  <i class="fa fa-paint-brush"></i>
-                </span>
-              </div>
-            </div>
-           </div>
-         </div>
-
-        <div class="field">
-          <div class="control">
-            <label class="label">Add images</label>
-              <div class="file">
-              <label class="file-label">
-                <%= f.input :image, as: :file, input_html: { class:"file-input product-image" }, label: false, wrapper: false %>
-                  <span class="file-cta">
-                    <span class="file-icon"><i class="fa fa-upload"></i></span>
-                    <span class="file-label">Choose a file…</span>
-                  </span>
-              </label>
               </div>
             </div>
           </div>
-          <output id="list"></output>
-        <hr />
 
-        <div class="field is-grouped">
-          <div class="control">
-            <%= f.button :submit, class: 'button is-warning' %>
-            <%= link_to 'Cancel', products_path, class:'button is-light' %>
+          <%# Condition Selection %>
+          <div class="field column is-4">
+            <div class="control">
+              <label class="label is-medium">Condition</label>
+              <div class="control has-icons-left">
+                <span class="select is-medium is-fullwidth">
+                  <%= f.input_field :condition, 
+                      collection: Product::CONDITION, 
+                      prompt: "Select condition", 
+                      required: true %>
+                </span>
+                <span class="icon is-medium is-left">
+                  <i class="fa fa-paint-brush"></i>
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
-      <% end %>
+        <%# Image Upload %>
+        <div class="field-group">
+          <label class="label">Product Images</label>
+          <div class="file-upload-container">
+            <div class="file is-centered">
+              <label class="file-label">
+                <%= f.input :image, 
+                    as: :file,
+                    input_html: { 
+                      class: "file-input product-image"
+                    },
+                    label: false,
+                    wrapper: false %>
+                <span class="file-cta">
+                  <span class="file-icon">
+                    <i class="fas fa-upload"></i>
+                  </span>
+                  <span class="file-label">Choose a file…</span>
+                </span>
+                <span class="file-name" id="filename">
+                  No file selected
+                </span>
+              </label>
+            </div>
+            <div id="image-preview" class="mt-3"></div>
+          </div>
+        </div>
+
+        <%# Form Actions %>
+        <div class="form-buttons">
+          <%= f.button :submit, class: 'button is-warning is-medium' %>
+          <%= link_to 'Cancel', products_path, class: 'button is-light is-medium' %>
+        </div>
+      </div>
+    <% end %>
   </div>
 </div>
+

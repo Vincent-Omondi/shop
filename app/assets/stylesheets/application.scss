@@ -1,34 +1,123 @@
 /*
- * This is a manifest file that'll be compiled into application.css, which will include all the files
- * listed below.
- *
- * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
- * vendor/assets/stylesheets directory can be referenced here using a relative path.
- *
- * You're free to add application-wide styles to this file and they'll appear at the bottom of the
- * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
- * files in this directory. Styles in this file should be added after the last require_* statement.
- * It is generally better to create a new file per style scope.
- *
  *= require_tree .
  *= require_self
  */
 
+// -----------------------------------------------------------------------------
+// Variables
+// -----------------------------------------------------------------------------
 $link: #444;
 $link-hover: #222;
 
+// -----------------------------------------------------------------------------
+// Imports
+// -----------------------------------------------------------------------------
 @import "bulma";
 @import "functions";
 
+// -----------------------------------------------------------------------------
+// Base Styles
+// -----------------------------------------------------------------------------
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  padding-top: 3.25rem;
+}
 
 .notification {
   border-radius: 0;
+  
+  &:not(:last-child) {
+    margin-bottom: 0;
+  }
 }
 
-.notification:not(:last-child) {
-  margin-bottom: 0;
+// -----------------------------------------------------------------------------
+// Navbar Styles
+// -----------------------------------------------------------------------------
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  background-color: $warning;
+  
+  .navbar-brand {
+    .title {
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .navbar-burger {
+    height: 4.25rem;
+    width: 4.25rem;
+    cursor: pointer;
+    
+    &:hover {
+      background-color: rgba(0,0,0,0.05);
+    }
+    
+    span {
+      height: 2px;
+      width: 16px;
+      left: calc(50% - 8px);
+      transition: all 0.3s ease-in-out;
+    }
+
+    &.is-active span {
+      &:nth-child(1) { transform: translateY(5px) rotate(45deg); }
+      &:nth-child(2) { opacity: 0; }
+      &:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
+    }
+  }
+
+  .navbar-menu {
+    @media screen and (max-width: 1023px) {
+      display: none;
+      position: absolute;
+      width: 100%;
+      top: 100%;
+      left: 0;
+      background-color: $warning;
+      box-shadow: 0 8px 16px rgba(10,10,10,.1);
+      padding: 0.5rem 0;
+      
+      &.is-active {
+        display: block !important;
+        animation: slideDown 0.3s ease-in-out;
+      }
+    }
+  }
+
+  .navbar-item {
+    font-weight: 500;
+    
+    .button {
+      transition: all 0.3s ease;
+      
+      &.is-warning:hover {
+        background-color: darken($warning, 5%);
+      }
+      
+      &.is-dark:hover {
+        background-color: lighten($dark, 5%);
+      }
+    }
+  }
+
+  .navbar-link::after {
+    border-color: currentColor;
+  }
 }
 
+// -----------------------------------------------------------------------------
+// Product Grid Styles
+// -----------------------------------------------------------------------------
 .product-index-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -42,6 +131,7 @@ $link-hover: #222;
     .title {
       line-height: 1.6rem;
     }
+    
     .price {
       position: absolute;
       bottom: 10px;
@@ -57,6 +147,7 @@ $link-hover: #222;
     img {
       max-width: 100%;
       width: 100%;
+      
       &:hover {
         opacity: .9;
       }
@@ -70,8 +161,9 @@ $link-hover: #222;
   }
 }
 
-// cart
-
+// -----------------------------------------------------------------------------
+// Cart Styles
+// -----------------------------------------------------------------------------
 .cart-icon {
   position: relative;
   
@@ -83,36 +175,66 @@ $link-hover: #222;
   }
 }
 
-.cart-table {
-  width: 100%;
-  margin-bottom: 2rem;
-}
-
-.notification {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1000;
-}
 .cart-count {
   position: absolute;
   top: -8px;
   right: -8px;
+  min-width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 0.75rem;
-  font-weight: bold;
+  font-weight: 600;
+}
+
+.cart-table {
+  width: 100%;
+  margin-bottom: 2rem;
 }
 
 .button.is-warning .icon {
   position: relative;
 }
 
-// Notifications
+// -----------------------------------------------------------------------------
+// Notification Styles
+// -----------------------------------------------------------------------------
 .global-notification {
   position: fixed;
   top: 20px;
   right: 20px;
-  z-index: 1000;
-  animation: fadeOut 5s forwards;
+  z-index: 31;
+  width: auto;
+  max-width: 350px;
+  border-radius: 4px;
+  padding: 1rem 1.5rem;
+  margin: 0;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  
+  &.is-success,
+  &.is-danger {
+    animation: fadeInOut 5s forwards;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Animations
+// -----------------------------------------------------------------------------
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-20px); }
+  5% { opacity: 1; transform: translateY(0); }
+  95% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
+
+@keyframes slideDown {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(0); }
 }
 
 @keyframes fadeOut {
@@ -121,20 +243,300 @@ $link-hover: #222;
   100% { opacity: 0; display: none; }
 }
 
-// Responsive navbar
+// -----------------------------------------------------------------------------
+// Utility Classes
+// -----------------------------------------------------------------------------
+.text-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// -----------------------------------------------------------------------------
+// Responsive Styles
+// -----------------------------------------------------------------------------
 @media screen and (max-width: 1023px) {
   .navbar-menu {
-    .navbar-end {
-      .navbar-item {
-        .field.is-grouped {
-          display: flex;
-          flex-direction: column;
-          
-          .button {
-            margin: 5px 0;
-          }
+    .navbar-end .navbar-item {
+      .field.is-grouped {
+        display: flex;
+        flex-direction: column;
+        
+        .button {
+          margin: 5px 0;
+        }
+      }
+    }
+  }
+
+  .navbar-menu.is-active {
+    .navbar-end .navbar-item {
+      padding: 0.75rem 1.5rem;
+      
+      .field.is-grouped {
+        display: flex;
+        flex-direction: column;
+        
+        .button {
+          width: 100%;
+          margin: 0.25rem 0;
+          justify-content: center;
         }
       }
     }
   }
 }
+
+// -----------------------------------------------------------------------------
+// Form Styles
+// -----------------------------------------------------------------------------
+.file-upload-container {
+  .file {
+    justify-content: center;
+    
+    .file-label {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      align-items: center;
+    }
+
+    .file-cta {
+      flex: 0 0 auto;
+      border-radius: 4px 0 0 4px;
+    }
+
+    .file-name {
+      flex: 1;
+      text-align: center;
+      border-radius: 0 4px 4px 0;
+      border-left: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .required {
+    color: red;
+    margin-left: 4px;
+  }
+  
+  #image-preview {
+    margin-top: 1rem;
+    text-align: center;
+    
+    img {
+      max-height: 200px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+  }
+}
+
+.error-container {
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    
+    li {
+      color: #dc3545;
+      margin-bottom: 0.25rem;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+// Add this to the existing Responsive Styles section
+@media screen and (max-width: 768px) {
+  .file-upload-container {
+    .file {
+      .file-label {
+        flex-direction: column;
+        max-width: 100%;
+      }
+
+      .file-cta {
+        width: 100%;
+        border-radius: 4px 4px 0 0;
+      }
+
+      .file-name {
+        width: 100%;
+        border-radius: 0 0 4px 4px;
+        border-left: 1px solid #dbdbdb;
+        border-top: none;
+      }
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Form Styles (continued)
+// -----------------------------------------------------------------------------
+.form-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+
+  @media screen and (max-width: 768px) {
+    margin: 1rem auto;
+  }
+}
+
+.custom-form {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  .form-header {
+    padding: 2rem 2rem 1rem;
+    text-align: center;
+    
+    .title {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #363636;
+      
+      @media screen and (max-width: 768px) {
+        font-size: 1.5rem;
+      }
+    }
+  }
+
+  .form-body {
+    padding: 1rem 2rem 2rem;
+
+    @media screen and (max-width: 768px) {
+      padding: 1rem;
+    }
+  }
+
+  // Input styles
+  .input, .textarea, .select select {
+    border: 2px solid #eee;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    
+    &:focus {
+      border-color: $warning;
+      box-shadow: 0 0 0 1px rgba($warning, 0.2);
+    }
+  }
+
+  // File upload styling
+  .file-upload-container {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      border-color: $warning;
+      background-color: rgba($warning, 0.05);
+    }
+
+    .file-label {
+      width: 100%;
+    }
+
+    @media screen and (max-width: 768px) {
+      padding: 1rem;
+    }
+  }
+
+  // Button group styling
+  .form-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+
+    @media screen and (max-width: 768px) {
+      flex-direction: column;
+      
+      .button {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// Form field spacing
+.field-group {
+  margin-bottom: 1.5rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+}
+
+// Error styling
+.error-container {
+  background-color: #fff5f5;
+  border-left: 4px solid #f56565;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 4px;
+}
+
+// Add this to the Animations section
+@keyframes formAppear {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Apply animation to form
+.animate-form {
+  animation: formAppear 0.5s ease-out forwards;
+}
+
+// Add this to the Responsive Styles section
+@media screen and (max-width: 480px) {
+  .custom-form {
+    margin: 0.5rem;
+    
+    .form-header {
+      padding: 1rem 1rem 0.5rem;
+    }
+    
+    .form-body {
+      padding: 0.5rem 1rem 1rem;
+    }
+    
+    .input, .textarea, .select select {
+      font-size: 16px; // Prevents zoom on iOS
+    }
+  }
+}
+
+// Uncomment if needed
+// .responsive-grid {
+//   display: grid;
+//   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+//   gap: 1.5rem;
+//   margin-bottom: 1.5rem;
+
+//   @media screen and (max-width: 768px) {
+//     grid-template-columns: 1fr;
+//     gap: 1rem;
+//   }
+// }
