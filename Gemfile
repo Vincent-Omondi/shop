@@ -70,3 +70,5 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'mimemagic', '~> 0.3.10'
 
 gem 'importmap-rails'
+
+gem "turbo-rails"
