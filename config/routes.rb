@@ -17,4 +17,7 @@ Rails.application.routes.draw do
   root 'products#index'
   post 'stkpush', to: 'mpesa#stkpush'
   post 'stkquery', to: 'mpesa#stkquery'
+  resources :checkouts, only: [:new, :create] do
+    get 'confirmation', on: :member
+  end
 end
