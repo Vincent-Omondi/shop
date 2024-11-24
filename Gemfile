@@ -76,3 +76,4 @@ gem "turbo-rails"
 
 gem 'rack-cors'
 gem 'rest-client'
+gem 'httparty'
