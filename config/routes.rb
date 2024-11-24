@@ -19,7 +19,9 @@ Rails.application.routes.draw do
   post '/mpesa/callback', to: 'mpesa#callback'
   post '/stkquery', to: 'mpesa#stkquery'
   resources :checkouts, only: [:new, :create] do
-    get 'confirmation', on: :member
+    member do
+      get 'confirmation'
+    end
   end
   
 end

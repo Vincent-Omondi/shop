@@ -1,7 +1,7 @@
 class CheckoutsController < ApplicationController
   include CurrentCart
   before_action :set_cart
-  before_action :ensure_cart_not_empty
+  before_action :ensure_cart_not_empty, except: [:confirmation]
 
   def new
     @checkout = Checkout.new
@@ -23,7 +23,7 @@ class CheckoutsController < ApplicationController
         response = initiate_mpesa_payment(payment)
         
         if response[:success]
-          redirect_to checkout_confirmation_path(payment),
+          redirect_to confirmation_checkout_path(payment),
                       notice: 'Payment initiated. Please check your phone to complete the transaction.'
         else
           error_message = response[:message] || 'Failed to initiate payment'
@@ -42,6 +42,13 @@ class CheckoutsController < ApplicationController
     end
   end
 
+  def confirmation
+    @payment = MpesaPayment.find(params[:id])
+    # You can add any additional logic needed for the confirmation page
+  rescue ActiveRecord::RecordNotFound
+    redirect_to root_path, alert: 'Payment not found'
+  end
+
   private
 
   def checkout_params
@@ -55,32 +62,33 @@ class CheckoutsController < ApplicationController
   end
 
   def initiate_mpesa_payment(payment)
-    response = MpesaController.new.stkpush(
+    Rails.logger.info("Initiating M-Pesa payment for payment ID: #{payment.id}")
+    Rails.logger.info("Phone number: #{payment.phone_number}, Amount: #{payment.amount}")
+
+    response = MpesaService.initiate_stk_push(
       phone_number: payment.phone_number,
       amount: payment.amount
     )
-    
-    case response[0]
-    when :success
-      payment.update!(
-        checkout_request_id: response[1]['CheckoutRequestID'],
-        merchant_request_id: response[1]['MerchantRequestID'],
-        status: 'pending'
-      )
-      { success: true, message: 'Payment initiated successfully' }
-    when :error
-      Rails.logger.error("Mpesa payment failed: #{response[1]}")
-      { success: false, message: response[1] || 'Payment initiation failed' }
+
+    if response[:success]
+      begin
+        payment.update!(
+          checkout_request_id: response[:data]['CheckoutRequestID'],
+          merchant_request_id: response[:data]['MerchantRequestID'],
+          status: 'pending'
+        )
+        { success: true, message: 'Payment initiated successfully' }
+      rescue => e
+        Rails.logger.error("Failed to update payment record: #{e.message}")
+        { success: false, message: "Failed to save payment details: #{e.message}" }
+      end
     else
-      Rails.logger.error("Unexpected response from Mpesa: #{response.inspect}")
-      { success: false, message: 'Unexpected error occurred' }
+      Rails.logger.error("Mpesa payment failed: #{response.inspect}")
+      { success: false, message: response[:error] }
     end
-  rescue ActiveRecord::RecordInvalid => e
-    Rails.logger.error("Failed to update payment record: #{e.message}")
-    { success: false, message: 'Failed to save payment details' }
-  rescue StandardError => e
-    Rails.logger.error("Mpesa payment initiation failed: #{e.message}")
+  rescue => e
+    Rails.logger.error("Payment initiation error: #{e.class} - #{e.message}")
     Rails.logger.error(e.backtrace.join("\n"))
-    { success: false, message: 'System error occurred' }
+    { success: false, message: "System error occurred: #{e.message}" }
   end
 end 
