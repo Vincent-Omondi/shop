@@ -1,0 +1,13 @@
+<div class="container">
+  <div class="notification is-info">
+    <h2 class="title">Payment Status</h2>
+    <p>Please complete the payment on your phone.</p>
+    <p>Transaction Reference: <%= @payment.checkout_request_id %></p>
+    <p>Amount: <%= number_to_currency(@payment.amount) %></p>
+    <p>Status: <%= @payment.status.titleize %></p>
+  </div>
+
+  <div class="buttons">
+    <%= link_to 'Back to Shop', root_path, class: 'button is-primary' %>
+  </div>
+</div> 

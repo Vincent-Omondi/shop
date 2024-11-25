@@ -1,0 +1,63 @@
+<div class="checkout-container">
+  <h1 class="title">Checkout</h1>
+
+  <div class="columns">
+    <div class="column is-two-thirds">
+      <%= form_with(model: @checkout, local: true, class: 'checkout-form') do |f| %>
+        <% if @checkout.errors.any? %>
+          <div class="notification is-danger">
+            <h2><%= pluralize(@checkout.errors.count, "error") %> prohibited this checkout from being completed:</h2>
+            <ul>
+              <% @checkout.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="field">
+          <%= f.label :full_name, class: 'label' %>
+          <%= f.text_field :full_name, class: 'input' %>
+        </div>
+
+        <div class="field">
+            <%= f.label :phone_number, 'M-Pesa Phone Number (format: 254XXXXXXXXX)', class: 'label' %>
+            <%= f.text_field :phone_number, class: 'input', 
+                pattern: "254[0-9]{9}",
+                title: "Phone number must start with 254 followed by 9 digits",
+                placeholder: "254XXXXXXXXX" %>
+            <p class="help">Example: 254712345678</p>
+        </div>
+
+        <div class="field">
+          <%= f.label :email, class: 'label' %>
+          <%= f.email_field :email, class: 'input' %>
+        </div>
+
+        <div class="field">
+          <%= f.label :delivery_address, class: 'label' %>
+          <%= f.text_area :delivery_address, class: 'textarea' %>
+        </div>
+
+        <%= f.submit 'Pay with M-Pesa', class: 'button is-primary' %>
+      <% end %>
+    </div>
+
+    <div class="column">
+      <div class="box">
+        <h2 class="title is-4">Order Summary</h2>
+        <% @cart.line_items.each do |item| %>
+          <div class="order-item">
+            <span><%= item.product.title %> × <%= item.quantity %></span>
+            <span><%= number_to_currency(item.total_price) %></span>
+          </div>
+        <% end %>
+        <hr>
+        <div class="total">
+          <strong>Total:</strong>
+          <strong><%= number_to_currency(@cart.total_price) %></strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

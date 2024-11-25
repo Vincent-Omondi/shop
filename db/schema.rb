@@ -10,23 +10,42 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_10_26_123817) do
+ActiveRecord::Schema.define(version: 2024_11_23_175627) do
 
-  create_table "carts", force: :cascade do |t|
+  create_table "access_tokens", force: :cascade do |t|
+    t.string "token"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "carts", force: :cascade do |t|
     t.integer "user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_carts_on_user_id"
   end
 
   create_table "line_items", force: :cascade do |t|
     t.integer "product_id", null: false
     t.integer "cart_id", null: false
-    t.integer "quantity"
+    t.integer "quantity", default: 1
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["cart_id"], name: "index_line_items_on_cart_id"
     t.index ["product_id"], name: "index_line_items_on_product_id"
+  end
+
+  create_table "mpesa_payments", force: :cascade do |t|
+    t.integer "cart_id", null: false
+    t.string "phone_number"
+    t.decimal "amount", precision: 10, scale: 2
+    t.string "merchant_request_id"
+    t.string "checkout_request_id"
+    t.integer "status", default: 0
+    t.json "result_payload"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["cart_id"], name: "index_mpesa_payments_on_cart_id"
   end
 
   create_table "products", force: :cascade do |t|
@@ -59,4 +78,5 @@ ActiveRecord::Schema.define(version: 2024_10_26_123817) do
   add_foreign_key "carts", "users"
   add_foreign_key "line_items", "carts"
   add_foreign_key "line_items", "products"
+  add_foreign_key "mpesa_payments", "carts"
 end

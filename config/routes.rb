@@ -15,4 +15,13 @@ Rails.application.routes.draw do
     registrations: 'registrations'
   }
   root 'products#index'
+  post '/stkpush', to: 'mpesa#stkpush'
+  post '/mpesa/callback', to: 'mpesa#callback'
+  post '/stkquery', to: 'mpesa#stkquery'
+  resources :checkouts, only: [:new, :create] do
+    member do
+      get 'confirmation'
+    end
+  end
+  
 end
