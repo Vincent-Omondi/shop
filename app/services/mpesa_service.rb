@@ -86,6 +86,37 @@ class MpesaService
     end
   end
 
+  def self.query_payment_status(checkout_request_id)
+    new.query_payment_status(checkout_request_id)
+  end
+
+  def query_payment_status(checkout_request_id)
+    url = "https://sandbox.safaricom.co.ke/mpesa/stkpushquery/v1/query"
+    timestamp = Time.now.strftime("%Y%m%d%H%M%S")
+    business_short_code = ENV["MPESA_BUSINESS_SHORTCODE"]
+    password = Base64.strict_encode64("#{business_short_code}#{ENV['MPESA_PASSKEY']}#{timestamp}")
+
+    payload = {
+      BusinessShortCode: business_short_code,
+      Password: password,
+      Timestamp: timestamp,
+      CheckoutRequestID: checkout_request_id
+    }
+
+    headers = {
+      'Content-Type': 'application/json',
+      'Authorization': "Bearer #{get_access_token}"
+    }
+
+    response = RestClient.post(url, payload.to_json, headers)
+    parsed_response = JSON.parse(response.body)
+    
+    { success: true, data: parsed_response }
+  rescue => e
+    Rails.logger.error("Payment status query failed: #{e.message}")
+    { success: false, error: e.message }
+  end
+
   private
 
   def get_access_token
