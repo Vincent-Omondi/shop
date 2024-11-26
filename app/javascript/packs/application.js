@@ -100,3 +100,6 @@ const initializeFileUpload = () => {
 
 document.addEventListener('DOMContentLoaded', initializeFileUpload);
 document.addEventListener('turbo:load', initializeFileUpload);
+
+require("@rails/ujs").start()
+require("turbolinks").start()

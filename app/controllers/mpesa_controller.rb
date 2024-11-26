@@ -114,62 +114,56 @@ class MpesaController < ApplicationController
   
     def stkquery
       checkout_request_id = params[:CheckoutRequestID]
+      payment = MpesaPayment.find_by(checkout_request_id: checkout_request_id)
       
-      unless checkout_request_id.present?
-        return render json: { success: false, error: "CheckoutRequestID is required" }, 
-                     status: :unprocessable_entity
-      end
-
-      begin
-        url = "https://sandbox.safaricom.co.ke/mpesa/stkpushquery/v1/query"
-        timestamp = Time.now.strftime("%Y%m%d%H%M%S")
-        business_short_code = ENV["MPESA_BUSINESS_SHORTCODE"]
-        password = Base64.strict_encode64("#{business_short_code}#{ENV["MPESA_PASSKEY"]}#{timestamp}")
-
-        payload = {
-          BusinessShortCode: business_short_code,
-          Password: password,
-          Timestamp: timestamp,
-          CheckoutRequestID: checkout_request_id
-        }.to_json
-
-        headers = {
-          'Content-Type': 'application/json',
-          'Authorization': "Bearer #{get_access_token}"
+      if payment&.completed?
+        render json: { 
+          success: true, 
+          data: { ResultCode: 0, ResultDesc: "Success" } 
         }
-
-        response = RestClient.post(url, payload, headers)
-        
-        case response.code
-        when 200
-          result = JSON.parse(response.body)
-          render json: { success: true, data: result }, status: :ok
-        else
-          render json: { success: false, error: "Unexpected response: #{response.code}" }, 
-                 status: :unprocessable_entity
-        end
-
-      rescue RestClient::ExceptionWithResponse => e
-        error_response = JSON.parse(e.response.body) rescue { error: e.message }
-        Rails.logger.error("STK Query failed: #{error_response}")
-        render json: { success: false, error: error_response }, 
-               status: :unprocessable_entity
-      rescue StandardError => e
-        Rails.logger.error("STK Query error: #{e.message}")
-        render json: { success: false, error: "Internal server error" }, 
-               status: :internal_server_error
+        return
+      elsif payment&.failed?
+        render json: { 
+          success: true, 
+          data: { ResultCode: 1, ResultDesc: "Failed" } 
+        }
+        return
       end
+
+      # Query M-Pesa for status only if payment is still pending
+      response = MpesaService.query_payment_status(checkout_request_id)
+      render json: response
+    rescue => e
+      Rails.logger.error("STK Query error: #{e.message}")
+      render json: { success: false, error: e.message }, status: :internal_server_error
     end
   
     def callback
-      # Log the callback response
       Rails.logger.info "M-PESA CALLBACK: #{params.inspect}"
       
-      # Process the callback
-      render json: { 
-        ResultCode: 0,
-        ResultDesc: "Success"
-      }
+      body = params[:Body] || {}
+      stkCallback = body[:stkCallback] || {}
+      result = stkCallback[:ResultCode].to_i
+      merchant_request_id = stkCallback[:MerchantRequestID]
+      checkout_request_id = stkCallback[:CheckoutRequestID]
+      
+      payment = MpesaPayment.find_by(checkout_request_id: checkout_request_id)
+      
+      if payment
+        if result.zero?
+          payment.update!(
+            status: 'completed',
+            result_payload: params.to_json
+          )
+        else
+          payment.update!(
+            status: 'failed',
+            result_payload: params.to_json
+          )
+        end
+      end
+
+      render json: { ResultCode: 0, ResultDesc: "Success" }
     end
   
     private

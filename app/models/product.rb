@@ -2,7 +2,7 @@ class Product < ApplicationRecord
   before_destroy :not_referenced_by_any_line_item
   belongs_to :user
   mount_uploader :image, ImageUploader
-  has_many :line_items
+  has_many :line_items, dependent: :restrict_with_error
   serialize :image, JSON # For SQLite
 
   BRAND = %w{ Ferrari Opel Lenovo Fossil }
@@ -23,8 +23,8 @@ class Product < ApplicationRecord
   private
 
   def not_referenced_by_any_line_item
-    unless line_items.empty?
-      errors.add(:base, "Line items present")
+    if line_items.any?
+      errors.add(:base, "Cannot delete product while it's in a cart")
       throw :abort
     end
   end

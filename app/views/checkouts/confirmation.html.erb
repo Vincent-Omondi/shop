@@ -1,13 +1,34 @@
 <div class="container">
   <div class="notification is-info">
     <h2 class="title">Payment Status</h2>
-    <p>Please complete the payment on your phone.</p>
-    <p>Transaction Reference: <%= @payment.checkout_request_id %></p>
-    <p>Amount: <%= number_to_currency(@payment.amount) %></p>
-    <p>Status: <%= @payment.status.titleize %></p>
+    <% if @payment.completed? %>
+      <p>Your payment has been received and your order is being processed.</p>
+      <p>You will receive a confirmation email shortly.</p>
+    <% elsif @payment.failed? %>
+      <p>We were unable to process your payment. Please try again.</p>
+    <% else %>
+      <p>Please complete the payment on your phone.</p>
+      <p>Transaction Reference: <%= @payment.checkout_request_id %></p>
+      <p>Amount: <%= number_to_currency(@payment.amount) %></p>
+    <% end %>
+    <p>Status: <span id="payment-status" class="tag is-<%= @payment.status == 'completed' ? 'success' : (@payment.status == 'failed' ? 'danger' : 'warning') %>">
+      <%= @payment.status.titleize %>
+    </span></p>
   </div>
 
   <div class="buttons">
-    <%= link_to 'Back to Shop', root_path, class: 'button is-primary' %>
+    <%= link_to 'Back to Shop', root_path, class: 'button is-light' %>
   </div>
-</div> 
+</div>
+
+<%= javascript_pack_tag 'payment_status' %>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof PaymentStatusPoller !== 'undefined') {
+      const poller = new PaymentStatusPoller('<%= @payment.checkout_request_id %>');
+      poller.start();
+    } else {
+      console.error('PaymentStatusPoller not loaded');
+    }
+  });
+</script> 

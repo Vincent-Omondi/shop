@@ -56,10 +56,24 @@ class ProductsController < ApplicationController
 
   # DELETE /products/1 or /products/1.json
   def destroy
-    @product.destroy
-    respond_to do |format|
-      format.html { redirect_to products_url, notice: "Product was successfully deleted." }
-      format.json { head :no_content }
+    begin
+      if @product.destroy
+        respond_to do |format|
+          format.html { redirect_to products_url, notice: "Product was successfully deleted." }
+          format.json { head :no_content }
+        end
+      else
+        error_message = @product.errors.full_messages.join(", ")
+        respond_to do |format|
+          format.html { redirect_to products_url, alert: error_message }
+          format.json { render json: { error: error_message }, status: :unprocessable_entity }
+        end
+      end
+    rescue => e
+      respond_to do |format|
+        format.html { redirect_to products_url, alert: "Error deleting product: #{e.message}" }
+        format.json { render json: { error: e.message }, status: :unprocessable_entity }
+      end
     end
   end
 

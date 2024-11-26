@@ -22,3 +22,19 @@
       font-size: 1.2em;
     }
   }
+
+.notification {
+  transition: all 0.3s ease-in-out;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.buttons {
+  margin-top: 1.5rem;
+  
+  .button {
+    margin-right: 0.5rem;
+  }
+}
