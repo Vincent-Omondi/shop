@@ -1,6 +1,7 @@
 // Configure your import map in config/importmap.rb
 import "@hotwired/turbo-rails"
 import "../controllers"
+import './payment_status'
 
 console.log('Application.js is loaded!'); 
 

@@ -23,12 +23,13 @@
 
 <%= javascript_pack_tag 'payment_status' %>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    if (typeof PaymentStatusPoller !== 'undefined') {
-      const poller = new PaymentStatusPoller('<%= @payment.checkout_request_id %>');
-      poller.start();
-    } else {
-      console.error('PaymentStatusPoller not loaded');
-    }
-  });
-</script> 
+ document.addEventListener('DOMContentLoaded', function() {
+ if (typeof PaymentStatusPoller !== 'undefined') {
+   const poller = new PaymentStatusPoller('<%= @payment.checkout_request_id %>');
+   window.currentPoller = poller; // Store globally for cleanup
+   poller.start();
+ } else {
+   console.error('PaymentStatusPoller not loaded');
+ }
+ });
+</script>

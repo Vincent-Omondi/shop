@@ -7,14 +7,13 @@ class PaymentStatusPoller {
     this.notificationElement = document.querySelector('.notification');
     this.isPolling = false;
   }
-
   start() {
     if (this.isPolling) return;
     this.isPolling = true;
     
     // Check immediately
     this.checkStatus();
-    // Poll every 1 second instead of 10 seconds
+    // Poll every 1 second instead 
     this.pollInterval = setInterval(() => this.checkStatus(), 1000);
     
     // Clear interval when leaving the page
@@ -93,7 +92,7 @@ class PaymentStatusPoller {
         <h2 class="title">Payment Failed</h2>
         <p>We were unable to process your payment. Please try again.</p>
         <div class="mt-4">
-          <a href="/checkout/new" class="button is-primary">Try Again</a>
+          <a href="/checkouts/new" class="button is-primary">Try Again</a>
           <a href="/" class="button is-light">Return to Shop</a>
         </div>
       `;
@@ -118,7 +117,5 @@ document.addEventListener('turbolinks:before-visit', () => {
     window.currentPoller.stop();
   }
 });
-
-window.PaymentStatusPoller = PaymentStatusPoller; 
 
 window.PaymentStatusPoller = PaymentStatusPoller; 
