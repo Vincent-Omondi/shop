@@ -212,6 +212,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 **Note:** This project is a learning exercise focused on implementing core e-commerce functionality using Ruby on Rails.
-
-### JavaScript Dependencies
-Install required npm packages:
