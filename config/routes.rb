@@ -11,9 +11,10 @@ Rails.application.routes.draw do
       patch :update_quantity
     end
   end
-  devise_for :users, controllers: {
-    registrations: 'registrations'
-  }
+  # devise_for :users, controllers: {
+  #   registrations: 'registrations'
+  # }
+  devise_for :users, controllers: { sessions: 'sessions' }
   root 'products#index'
   post '/stkpush', to: 'mpesa#stkpush'
   post '/mpesa/callback', to: 'mpesa#callback'
