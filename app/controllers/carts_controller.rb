@@ -20,5 +20,4 @@ class CartsController < ApplicationController
     @cart.line_items.destroy_all
     redirect_to root_path, notice: 'Your cart has been emptied'
   end
-
 end
