@@ -9,16 +9,16 @@ class LineItemsController < ApplicationController
     @line_item = @cart.add_product(product)
 
     if @line_item.save
-      redirect_back(fallback_location: root_path, notice: "#{product.title} added to your cart")  # <- Changed this line
+      redirect_back(fallback_location: root_path, notice: "Added to your cart")  # <- Changed this line
     else
-      redirect_to product, alert: "Failed to add #{product.title} to cart"
+      redirect_to product, alert: "Failed to add to cart"
     end
   end
 
   def destroy
     product_title = @line_item.product.title
     @line_item.destroy
-    redirect_to @cart, notice: "#{product_title} removed from your cart"
+    redirect_to @cart, notice: "Removed from your cart"
   end
 
   def update_quantity
